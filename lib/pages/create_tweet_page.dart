@@ -114,11 +114,9 @@ class _CreateTweetPageState extends State<CreateTweetPage> {
 
   Future<void> _createPost(BuildContext context) async{
     final provider = Provider.of<TweetProvider>(context,listen: false);
-    final String images = _images.map((e){
-      return e.getByteData().then((value) =>value.toString());
-    }).toList().join(',');
-    return provider.createPost(_tweet, images).then((value){
-        Navigator.of(context).pop();
+    
+    return  provider.createPost(_tweet, _images).then((value){
+      Navigator.of(context).pop();
     }).catchError((e){
       print(e);
       _scaffoldKey.currentState.showSnackBar(SnackBar(

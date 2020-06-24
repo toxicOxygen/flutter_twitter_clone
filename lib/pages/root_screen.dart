@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/providers/tweet_provider.dart';
+import 'package:twitter_clone/providers/user_provider.dart';
 import '../pages/create_tweet_page.dart';
 import '../custom_widgets/bottom_navigator.dart';
 import '../custom_widgets/sidebar_widget.dart';
@@ -25,7 +26,10 @@ class _RootScreenState extends State<RootScreen> {
   void didChangeDependencies() {
     if(_isInit){
       setState(() {_isLoading = true; });
-      Provider.of<TweetProvider>(context).getPosts().then((value){
+      Future.wait([
+        Provider.of<TweetProvider>(context).getPosts(),
+        Provider.of<UserProvider>(context).fetchCurrentUser()
+      ]).then((value){
         setState(() {_isLoading = false; });
       }).catchError((e){
         setState(() {_isLoading = false; });
