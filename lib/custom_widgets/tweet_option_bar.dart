@@ -5,31 +5,33 @@ import '../pages/add_comment_page.dart';
 import './custom_bottom_sheet.dart';
 
 class TweetOptionsBar extends StatelessWidget {
-  final int postId;
+  final int id;
   const TweetOptionsBar({
     Key key,
-    this.postId
+    this.id
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final tweetProvider = Provider.of<TweetProvider>(context,listen: true);
-    final post = tweetProvider.getPostLocally(postId);
+    final post = Provider.of<Tweet>(context,listen: true);
     
     final List<int> likesCount = post.post.usersLike?? [];
-    final commentsCount = post.post.comments?? [];
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        CustomIconButton(
-          count: commentsCount.length,
-          icon: Icon(Icons.chat_bubble_outline),
-          onPressed: (){
-            Navigator.of(context).pushNamed(AddCommentPage.tag,arguments: postId);
-          },
+        Consumer<Tweet>(
+          builder: (ctx,tweet,_){
+            return CustomIconButton(
+              count: (post.post.comments?? []).length,
+              icon: Icon(Icons.chat_bubble_outline),
+              onPressed: (){
+                Navigator.of(context).pushNamed(AddCommentPage.tag,arguments: id);
+              },
+            );
+          }
         ),
         CustomIconButton(
           count: 0,

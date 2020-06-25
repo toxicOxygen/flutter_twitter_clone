@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import '../extras/exceptions.dart';
 import '../models/posts.dart';
+import '../models/comments.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ import 'package:http_parser/http_parser.dart';
 class Tweet extends ChangeNotifier{
   String _baseUrl = "https://kwaku96.pythonanywhere.com";
   Post post;
+  final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
   Tweet({
     @required this.post
@@ -21,19 +23,18 @@ class Tweet extends ChangeNotifier{
     post = Post.fromJson(json);
   }
 
-  Future<void> toggleLike(String token) async{
+  Future<void> toggleLike(String action) async{
     var url = "$_baseUrl/api/v1/posts/like_post/";
-    return http.post(
-      url,
-      headers: {
-        "Authorization":"Token $token",
-        "Content-Type":"application/json",
-      },
-      body: {
-        "id":post.id,
-        "action":"like" //TODO change this later
-      }
-    ).then((value){
+    return _getToken().then((token){
+      return http.post(
+          url,
+          headers: {"Authorization":"Token $token"},
+          body: {
+            "id":post.id,
+            "action": action //TODO change this later
+          }
+      );
+    }).then((value){
       if(value.statusCode != 200)
         throw HttpException('failed to like post');
       return json.decode(value.body);
@@ -45,6 +46,39 @@ class Tweet extends ChangeNotifier{
       print(e);
       throw HttpException(e.toString());
     });
+  }
+
+  Future<void> addComment(String comment) async{
+    String url = "$_baseUrl/api/v1/comments/create/";
+    return _getToken().then((value){
+      return http.post(
+          url,
+        headers: {"Authorization":"Token $value"},
+        body: {
+          "post":"${post.id}",
+          "comment":comment
+        }
+      );
+    }).then((value){
+      if(value.statusCode != 201)
+        throw HttpException("failed to add comment");
+      return json.decode(value.body);
+    }).then((value){
+      Comment comment = Comment.fromJson(value);
+      post.comments.add(comment);
+      notifyListeners();
+    }).catchError((e){
+      print(e);
+      throw HttpException(e.toString());
+    });
+  }
+
+  Future<String> _getToken() async{
+    SharedPreferences prefs = await _pref;
+    String token = prefs.get('token');
+    if(token == null)
+      throw HttpException('failed to get token');
+    return token;
   }
 }
 
@@ -123,7 +157,6 @@ class TweetProvider extends ChangeNotifier{
         throw HttpException("failed to add post");
       return value.stream.bytesToString();
     }).then((value){
-      print(value);
       return json.decode(value);
     }).then((value){
       _posts.insert(0, Tweet.fromJson(value));

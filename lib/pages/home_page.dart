@@ -39,11 +39,14 @@ class HomePage extends StatelessWidget {
               if(!isLoading)
                 SliverList(
                   delegate: SliverChildBuilderDelegate((ctx,i){
-                    return TweetCard(
-                      post: tweetProvider.posts[i].post,
-                      onTap: ()=>Navigator.of(context).pushNamed(
-                          TweetDetailPage.tag,
-                          arguments: {'post':tweetProvider.posts[i]}
+                    return ChangeNotifierProvider.value(
+                      value: tweetProvider.posts[i],
+                      child: TweetCard(
+                        post: tweetProvider.posts[i].post,
+                        onTap: ()=>Navigator.of(context).pushNamed(
+                            TweetDetailPage.tag,
+                            arguments: {'post':tweetProvider.posts[i]}
+                        ),
                       ),
                     );
                   },childCount: tweetProvider.posts.length),

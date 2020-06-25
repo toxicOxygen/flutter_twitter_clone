@@ -87,7 +87,8 @@ class TweetCard extends StatelessWidget {
                       ),
                       SizedBox(height: 5,),
                       _imageSection(height),
-                      TweetOptionsBar(postId: !isComment? post.id: comment.id)
+                      if(!isComment)
+                        TweetOptionsBar(id: !isComment? post.id: comment.id)
                     ],
                   ),
                 )

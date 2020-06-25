@@ -10,6 +10,7 @@ class AddCommentPage extends StatelessWidget {
     final int targetPostId = ModalRoute.of(context).settings.arguments;
     final tweetProvider = Provider.of<TweetProvider>(context,listen: false);//might change listen to true
     final post = tweetProvider.getPostLocally(targetPostId);
+    String comment = '';
 
     return Scaffold(
       appBar: AppBar(
@@ -25,7 +26,7 @@ class AddCommentPage extends StatelessWidget {
               ),
               textColor: Colors.white,
               child: Text('Comment'),
-              onPressed: (){},
+              onPressed: ()=>_addComment(context,post, comment),
               color: Colors.blue,
             ),
           )
@@ -58,10 +59,10 @@ class AddCommentPage extends StatelessWidget {
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold
                               ),
-                              text: 'Virgil van Dijk ',
+                              text: '${post.post.user.username} ',
                               children: [
                                 TextSpan(
-                                  text: '@VirgilvDijk   16h',
+                                  text: '@bk_${post.post.user.username}   16h',
                                   style: TextStyle(fontWeight: FontWeight.normal,color: Colors.black45)
                                 )
                               ]
@@ -103,6 +104,7 @@ class AddCommentPage extends StatelessWidget {
                       hintText: 'Type your comment',
                       border: InputBorder.none
                     ),
+                    onChanged: (val)=>comment = val,
                   ),
                 )
               ],
@@ -111,5 +113,15 @@ class AddCommentPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _addComment(BuildContext context,Tweet tweet,String comment) async{
+    if(comment.isEmpty)
+      return; //TODO show snackbar
+    tweet.addComment(comment).then((value){
+      Navigator.of(context).pop();
+    }).catchError((e){
+      print(e);
+    });
   }
 }
