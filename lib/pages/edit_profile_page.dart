@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import '../providers/user_provider.dart';
 import '../custom_widgets/profile_photo_widget.dart';
+import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatelessWidget {
   static String tag = 'edit-profile-page';
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserProvider>(context).currentUser;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -43,6 +47,7 @@ class EditProfilePage extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
+                      initialValue: currentUser.username,
                       decoration: InputDecoration(
                         labelText: 'Name',
                         filled: true,
@@ -52,29 +57,32 @@ class EditProfilePage extends StatelessWidget {
                     ),
                     SizedBox(height: 8,),
                     TextFormField(
+                      initialValue: currentUser.bio??'',
                       decoration: InputDecoration(
-                          labelText: 'Bio',
-                          filled: true,
-                          fillColor: Colors.black12
+                        labelText: 'Bio',
+                        filled: true,
+                        fillColor: Colors.black12
                       ),
                       maxLength: 160,
                       maxLines: 3,
                     ),
                     SizedBox(height: 8,),
                     TextFormField(
+                      initialValue: currentUser.location??'',
                       decoration: InputDecoration(
-                          labelText: 'Location',
-                          filled: true,
-                          fillColor: Colors.black12
+                        labelText: 'Location',
+                        filled: true,
+                        fillColor: Colors.black12
                       ),
                       maxLength: 30,
                     ),
                     SizedBox(height: 8,),
                     TextFormField(
+                      initialValue: currentUser.website??'',
                       decoration: InputDecoration(
-                          labelText: 'Website',
-                          filled: true,
-                          fillColor: Colors.black12
+                        labelText: 'Website',
+                        filled: true,
+                        fillColor: Colors.black12
                       ),
                       maxLength: 100,
                     ),
@@ -97,7 +105,7 @@ class EditProfilePage extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       child: Text(
-                        'March 6, 1957',
+                        'Add your date of birth',
                         style: Theme.of(context).textTheme.headline5.copyWith(
                           color: Colors.black87
                         ),

@@ -19,19 +19,25 @@ class Tweet extends ChangeNotifier{
     @required this.post
   });
 
+  bool isLiked(int userId){
+    return (post.usersLike??<int>[]).contains(userId);
+  }
+
   Tweet.fromJson(Map<String,dynamic> json){
     post = Post.fromJson(json);
   }
 
-  Future<void> toggleLike(String action) async{
+  Future<void> toggleLike(int userId) async{
     var url = "$_baseUrl/api/v1/posts/like_post/";
+    String action = (post.usersLike??<int>[]).contains(userId)?"unlike":'like';
+
     return _getToken().then((token){
       return http.post(
           url,
           headers: {"Authorization":"Token $token"},
           body: {
-            "id":post.id,
-            "action": action //TODO change this later
+            "id":"${post.id}",
+            "action": action
           }
       );
     }).then((value){
@@ -39,9 +45,17 @@ class Tweet extends ChangeNotifier{
         throw HttpException('failed to like post');
       return json.decode(value.body);
     }).then((value){
+      print(value['users_like']);
       if(value['status'] == "ko")
         throw HttpException("failed to perform action");
-      print(value);
+      return value['users_like'];
+    }).then((value){
+      List<int> likes = [];
+      for(var i in value){
+        likes.add(i as int);
+      }
+      post.usersLike = likes;
+      notifyListeners();
     }).catchError((e){
       print(e);
       throw HttpException(e.toString());
@@ -93,6 +107,25 @@ class TweetProvider extends ChangeNotifier{
 
   List<Tweet> get posts{
     return [..._posts];
+  }
+
+  List<Tweet> userTweets(int userId){
+    return [..._posts].where((el) => el.post.user.id == userId).toList();
+  }
+
+  List<Tweet> likedTweets(int userId){
+    return [..._posts].where((l)=>l.post.usersLike.contains(userId)).toList();
+  }
+
+  List<Tweet> mediaTweets(int userId){
+    return userTweets(userId).where((el) => el.post.images.isNotEmpty).toList();
+  }
+
+  //TODO change this algorithm it's very bad
+  List<Tweet> tweetsWithComment(int userId){
+    return posts.where((el){
+      return el.post.comments.where((e) => e.user.id == userId).toList().isNotEmpty;
+    }).toList();
   }
 
   Tweet getPostLocally(int id){

@@ -11,9 +11,10 @@ class ProfilePhotoMainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: <Widget>[
-        ProfilePhotoWidget(),
+        ProfilePhotoWidget(user:user),
         Container(
             padding: const EdgeInsets.only(left: 18,top: 10),
             width: double.infinity,
@@ -27,48 +28,47 @@ class ProfilePhotoMainWidget extends StatelessWidget {
               style: TextStyle(color: Colors.black54),
             )
         ),
-        Container(
-          padding: const EdgeInsets.only(left: 18,right: 18,top: 10),
-          width: double.infinity,
-          child: Text(
-            "Duis aute irure dolor in reprehenderit in voluptate "
-                "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur "
-                "sint occaecat cupidatat non proident, sunt in culpa qui officia "
-                "deserunt mollit anim id est laborum.",
-            style: TextStyle(color: Colors.black87),
+        if(user.bio.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.only(left: 18,right: 18,top: 10),
+            width: double.infinity,
+            child: Text(
+              "${user.bio}",
+              style: TextStyle(color: Colors.black87),
+            ),
           ),
-        ),
         Padding(
           padding: const EdgeInsets.only(left:18.0,top: 10,right: 18),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: <Widget>[
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              if(user.dateOfBirth != null && user.dateOfBirth.isNotEmpty)
                 Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Icon(Icons.cake,color: Colors.black54,),
-                    Text(
-                      ' Born February 29,1996',
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ],
-                ),
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Icon(Icons.cake,color: Colors.black54,),
+                  Text(
+                    ' Born February 29,1996',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                ],
+              ),
+              if(user.dateOfBirth != null && user.dateOfBirth.isNotEmpty)
                 SizedBox(width: 15,),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Icon(Icons.calendar_today,color: Colors.black54,),
-                    Text(
-                      ' Joined August 2011',
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Icon(Icons.calendar_today,color: Colors.black54,),
+                  Text(
+                    ' Joined August 2011',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         Padding(

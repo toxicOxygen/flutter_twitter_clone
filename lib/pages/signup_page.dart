@@ -143,7 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _authData['password']
     ).then((value){
       setState(() {_isLoading = false; });
-      Navigator.of(context).popUntil(ModalRoute.withName(WelcomePage.tag));
+      Navigator.of(context).popUntil(ModalRoute.withName(Navigator.defaultRouteName));
       Navigator.of(context).pushReplacementNamed(RootScreen.tag);
     }).catchError((er){
       setState(() {_isLoading = false; });

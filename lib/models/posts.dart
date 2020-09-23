@@ -15,10 +15,10 @@ class Post {
     this.id,
     this.user,
     this.tweet,
-    this.images,
+    this.images = const [],
     this.created,
-    this.comments,
-    this.usersLike
+    this.comments = const [],
+    this.usersLike = const []
   });
 
   Post.fromJson(Map<String, dynamic> json) {
@@ -41,12 +41,7 @@ class Post {
       }
     }
 
-    if(json['images_like'] != null){
-      usersLike = List<int>();
-      for(var user in json['images_like']){
-        usersLike.add(user);
-      }
-    }
+    usersLike = json['users_like'].cast<int>();
   }
 
   Map<String, dynamic> toJson() {

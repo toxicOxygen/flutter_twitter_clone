@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../extras/general_func_and_const.dart';
 import '../pages/profile_page.dart';
 import './tweet_option_bar.dart';
 import '../models/posts.dart';
@@ -33,7 +34,7 @@ class TweetCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.only(top: 3),
       constraints: BoxConstraints(
-        maxHeight: height * 0.45,
+        maxHeight: height * 0.66,
         minHeight: height * 0.10,
         maxWidth: width
       ),
@@ -50,7 +51,7 @@ class TweetCard extends StatelessWidget {
                 CircleAvatar(
                   minRadius: 20,
                   maxRadius: 25,
-                  backgroundImage: NetworkImage('https://tinyurl.com/yawxco2g'),
+                  backgroundImage: NetworkImage(_getImageUrl()),
                 ),
                 SizedBox(width: 10,),
                 Expanded(
@@ -109,6 +110,12 @@ class TweetCard extends StatelessWidget {
       height: height * .23,
       postId: post.id,
     );
+  }
+
+  String _getImageUrl(){
+    if(isComment)
+      return comment.user.photo??defaultProfilePhotoUrl;
+    return post.user.photo??defaultProfilePhotoUrl;
   }
 }
 

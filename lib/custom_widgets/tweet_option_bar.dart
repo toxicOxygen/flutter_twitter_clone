@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:twitter_clone/providers/tweet_provider.dart';
+import 'package:twitter_clone/providers/user_provider.dart';
 import '../pages/add_comment_page.dart';
 import './custom_bottom_sheet.dart';
 
@@ -13,9 +14,8 @@ class TweetOptionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final post = Provider.of<Tweet>(context,listen: true);
-    
-    final List<int> likesCount = post.post.usersLike?? [];
+    //final post = Provider.of<Tweet>(context,listen: true);
+    var _user = Provider.of<UserProvider>(context).currentUser;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -25,7 +25,7 @@ class TweetOptionsBar extends StatelessWidget {
         Consumer<Tweet>(
           builder: (ctx,tweet,_){
             return CustomIconButton(
-              count: (post.post.comments?? []).length,
+              count: (tweet.post.comments?? []).length,
               icon: Icon(Icons.chat_bubble_outline),
               onPressed: (){
                 Navigator.of(context).pushNamed(AddCommentPage.tag,arguments: id);
@@ -44,10 +44,21 @@ class TweetOptionsBar extends StatelessWidget {
             ));
           },
         ),
-        CustomIconButton(
-          count: likesCount.length,
-          icon: Icon(Icons.favorite_border),
-          onPressed: (){},
+        Consumer<Tweet>(
+          builder: (ctx,tweet,_){
+            return CustomIconButton(
+              count: (tweet.post.usersLike ?? []).length,
+              icon: Icon(
+                tweet.isLiked(_user.id)?
+                Icons.favorite:
+                Icons.favorite_border
+              ),
+              onPressed: (){
+                final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
+                tweet.toggleLike(currentUser.id);
+              },
+            );
+          },
         ),
       ],
     );

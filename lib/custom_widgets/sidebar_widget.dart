@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/user_provider.dart';
 import '../pages/welcome_page.dart';
 import '../providers/auth_providers.dart';
 import '../pages/profile_page.dart';
@@ -79,7 +80,13 @@ class SideBarWidget extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.perm_identity),
           title: Text('Profile'),
-          onTap: ()=>Navigator.of(context).popAndPushNamed(ProfilePage.tag),
+          onTap: (){
+            final provider = Provider.of<UserProvider>(context,listen: false);
+            Navigator.of(context).popAndPushNamed(
+              ProfilePage.tag,
+              arguments: provider.currentUser
+            );
+          },
         ),
         ListTile(
           leading: Icon(Icons.lock_open),

@@ -49,7 +49,9 @@ class TweetImageViewPage extends StatelessWidget {
           itemBuilder: (ctx,i){
             return Image.network(
               post.post.images[i].image,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.65,
             );
           },
           itemCount: post.post.images.length,
@@ -57,6 +59,7 @@ class TweetImageViewPage extends StatelessWidget {
             autoPlay: false,
             viewportFraction: 1,
             enlargeCenterPage: false,
+            aspectRatio: 3/4
           ),
         ),
       ),

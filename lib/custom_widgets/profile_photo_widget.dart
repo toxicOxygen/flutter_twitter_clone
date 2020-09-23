@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/custom_widgets/cover_photo_widget.dart';
 import 'package:twitter_clone/custom_widgets/user_profile_photo_widget.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider.dart';
 import '../pages/edit_profile_page.dart';
+import '../models/users.dart';
 
 class ProfilePhotoWidget extends StatelessWidget {
   final bool isEditable;
   final List<int> separation;
+  final User user;
 
   ProfilePhotoWidget({
     this.isEditable = false,
-    this.separation = const [1,6,1]
+    this.separation = const [1,6,1],
+    this.user
   });
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    print("height of screen is  $height");
+    final currentUser = Provider.of<UserProvider>(context).currentUser;
+
+    String btnTxt = '';
+    if(!isEditable)
+      btnTxt = user.id == currentUser.id ? "Edit Profile" : "Follow";
+
     return Stack(
       children: <Widget>[
         Container(
@@ -57,13 +67,16 @@ class ProfilePhotoWidget extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
                   child: Text(
-                    'Edit Profile',
+                    '$btnTxt',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   color: Colors.blue,
                   textColor: Colors.blue,
                   onPressed: (){
-                    Navigator.of(context).pushNamed(EditProfilePage.tag);
+                    if(currentUser.id == user.id)
+                      Navigator.of(context).pushNamed(EditProfilePage.tag);
+                    else
+                      print("run code to follow user");
                   },
                 ),
               Expanded(flex: separation[2],child: Container(),),

@@ -16,11 +16,11 @@ class User {
     this.username,
     this.email,
     this.photo,
-    this.coverPhoto,
-    this.bio,
-    this.website,
-    this.location,
-    this.dateOfBirth,
+    this.coverPhoto='',
+    this.bio='',
+    this.website='',
+    this.location = '',
+    this.dateOfBirth = '',
     this.following
   });
 
